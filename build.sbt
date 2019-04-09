@@ -2,7 +2,7 @@ name          := "spark-scala-tutorial"
 organization  := "com.lightbend"
 description   := "Spark Scala Tutorial"
 version       := "6.0.0"
-scalaVersion  := "2.11.8"
+scalaVersion  := "2.11.12"
 scalacOptions := Seq("-deprecation", "-unchecked", "-encoding", "utf8", "-Xlint")
 excludeFilter in unmanagedSources := (HiddenFileFilter || "*-script.scala")
 unmanagedResourceDirectories in Compile += baseDirectory.value / "conf"
@@ -60,3 +60,5 @@ addCommandAlias("ex8",  "runMain SparkSQL8")
 // Note the differences in the next two definitions:
 addCommandAlias("ex10directory",  "runMain SparkStreaming10Main")
 addCommandAlias("ex10socket",     "runMain SparkStreaming10Main --socket localhost:9900")
+
+resolvers  += "MavenRepository" at "http://central.maven.org/maven2"
