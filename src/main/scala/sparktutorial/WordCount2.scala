@@ -1,11 +1,12 @@
 // package com.foo.bar    // You could put the code in a package...
 
-import util.FileUtil
 import org.apache.spark.{SparkConf, SparkContext}
+import util.FileUtil
+
+import scala.reflect.io
 // Implicit conversions, such as methods defined in
 // org.apache.spark.rdd.PairRDDFunctions
 // (http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.rdd.PairRDDFunctions)
-import org.apache.spark.SparkContext._
 
 /**
  * First implementation of Word Count. We'll run this one locally, to get a
@@ -29,14 +30,27 @@ object WordCount2 {
     // Put the "stop" inside a finally clause, so it's invoked even when
     // something fails that forces an abnormal termination.
     try {
+      def getText(args: Array[String]): String = {
+        args.length match {
+          case 0 => return "kjv"
+          case 1 => {
+            val specifiedText = args(0);
+            if (io.File(s"./data/${specifiedText}dat.txt").exists) {
+              return specifiedText
+            }
+            throw new IllegalArgumentException("No such sacred text exists, Nimrod")
+          }
+        }
+      }
+      val sacredText = getText(args);
+      val out = s"output/$sacredText-wc2"
 
-      val out = "output/kjv-wc2"
       // Deleting old output (if any) DO NOT DO IN PRODUCTION!!      // Deleting old output (if any)
       FileUtil.rmrf(out)
 
       // Load the King James Version of the Bible, then convert
       // each line to lower case, creating an RDD.
-      val input = sc.textFile("data/kjvdat.txt").map(line => line.toLowerCase)
+      val input = sc.textFile(s"data/${sacredText}dat.txt").map(line => line.toLowerCase)
 
       // We could cache the RDD in memory for fast, repeated access, but
       // we don't have to do this here because we're only going to make one
